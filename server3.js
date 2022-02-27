@@ -9,7 +9,7 @@ app.use(express.json())
 
 // pengennya buat config port di sini
 var server = app.listen(3002, function(){
-    console.log('server is okay')
+    console.log('server aman')
 })
 
 // buat socket
