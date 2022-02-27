@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PC4</title>
+
+    <style>
+        .center {
+            text-align: center;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .mt-10 {
+            margin-top: 10px;
+        }
+
+        .stretch-width {
+            flex-grow: 1;
+        }
+    </style>
+    <!-- MQTT.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.6/mqtt.js"
+        integrity="sha512-HEFFnIAH+EOTA38xqZE/cV5g45QmSIx6KOGWs6S255RXk++16FV5x88dtIiJxRcopk85qc7iT1syJlBkKQgrqw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- socket.io -->
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+        integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+        crossorigin="anonymous"></script>
+    <script>
+        const socket = new io("ws://localhost:3002");
+        socket.on("connect", () => {
+            console.log('Web socket connected');
+        });
+
+        socket.on('random-number', async (response) => {
+            try {
+                const data = JSON.parse(response);
+                document.getElementById('socket-num').innerHTML = data["number1"];
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
+        // =================== MQTT ==================================
+
+        const clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
+
+        const host = 'ws://localhost:1883/mqtt';
+
+        const options = {
+            keepalive: 60,
+            clientId: clientId,
+            protocolId: 'MQTT',
+            protocolVersion: 3,
+            clean: true,
+            reconnectPeriod: 1000,
+            connectTimeout: 30 * 1000
+        }
+
+        console.log('Connecting mqtt client')
+        const client = mqtt.connect(host, options);
+
+    </script>
+
+</head>
+
+<body>
+    <h1 class="center">PC4</h1>
+    <div class="flex center">
+        <div class="stretch-width">
+            <h3>Number 1</h3>
+            <h4>Web socket</h4>
+            <h1 id="socket-num">0</h1>
+        </div>
+        <div class="stretch-width">
+            <h3>Number 2</h3>
+            <h4>MQTT</h4>
+            <h1 id="mqtt-num">0</h1>
+        </div>
+    </div>
+</body>
+
+</html>
