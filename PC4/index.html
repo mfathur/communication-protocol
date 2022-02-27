@@ -53,13 +53,13 @@
 
         const clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
 
-        const host = 'ws://localhost:1883/mqtt';
+        const host = 'ws://localhost:9001/mqtt';
 
         const options = {
             keepalive: 60,
             clientId: clientId,
             protocolId: 'MQTT',
-            protocolVersion: 3,
+            protocolVersion: 5,
             clean: true,
             reconnectPeriod: 1000,
             connectTimeout: 30 * 1000
@@ -67,6 +67,17 @@
 
         console.log('Connecting mqtt client')
         const client = mqtt.connect(host, options);
+        client.subscribe("data/random-number");
+
+        client.on('message', (topic, payload) => {
+            try {
+                const data = JSON.parse(payload);
+                document.getElementById('mqtt-num').innerHTML = data["number2"];
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
 
     </script>
 
